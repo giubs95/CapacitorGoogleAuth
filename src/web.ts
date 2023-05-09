@@ -38,6 +38,7 @@ export class GoogleAuthWeb extends WebPlugin implements GoogleAuthPlugin {
       clientId: '',
       scopes: [],
       grantOfflineAccess: false,
+      select_account: false
     }
   ) {
     if (typeof window === 'undefined') {
@@ -55,6 +56,7 @@ export class GoogleAuthWeb extends WebPlugin implements GoogleAuthPlugin {
       clientId,
       grantOfflineAccess: _options.grantOfflineAccess ?? false,
       scopes: _options.scopes || [],
+      select_account: _options.select_account ?? false,
     };
 
     this.gapiLoaded = new Promise((resolve) => {
@@ -88,10 +90,13 @@ export class GoogleAuthWeb extends WebPlugin implements GoogleAuthPlugin {
       try {
         let serverAuthCode: string;
         const needsOfflineAccess = this.options.grantOfflineAccess ?? false;
-
+        const promptSelectAccount = this.options.select_account ?? false;
+        
         if (needsOfflineAccess) {
           const offlineAccessResponse = await gapi.auth2.getAuthInstance().grantOfflineAccess();
           serverAuthCode = offlineAccessResponse.code;
+        } else if (promptSelectAccount) {
+          await gapi.auth2.getAuthInstance().signIn({ prompt: 'select_account' });
         } else {
           await gapi.auth2.getAuthInstance().signIn();
         }

@@ -81,6 +81,12 @@ export interface InitOptions extends Pick<GoogleAuthPluginOptions, 'scopes' | 'c
    * @since 3.1.0
    * */
   grantOfflineAccess: boolean;
+    /**
+   * Force user to choose which accounts it wishes to use
+   * @default false
+   * @since x.x.x
+   */
+    select_account?: boolean;
 }
 
 export interface GoogleAuthPlugin {
